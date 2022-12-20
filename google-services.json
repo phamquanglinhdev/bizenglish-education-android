@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "752365506710",
+    "project_id": "bizeducation-7a375",
+    "storage_bucket": "bizeducation-7a375.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752365506710:android:f71c541323e156dbca72b7",
+        "android_client_info": {
+          "package_name": "com.linhcuenini.bizenglishedu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752365506710-k4o3gvcrlqf0vhv6k6qtb9n70kss215h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBccKY5AQg8wOuQbuSLqU7fhjCRJFaSALI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752365506710-k4o3gvcrlqf0vhv6k6qtb9n70kss215h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,10 @@
 {
   "expo": {
-    "name": "bizenglish-edu",
+    "scheme": "com.linhcuenini.bizenglishedu",
+    "name": "BizEnglish Education",
     "slug": "bizenglish-edu",
     "version": "1.0.0",
+    "jsEngine": "hermes",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,6 +13,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -24,10 +34,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.linhcuenini.bizenglishedu",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "236e2ce8-df39-48ef-a44d-ec891a4fb2ff"
+      }
     }
   }
 }
