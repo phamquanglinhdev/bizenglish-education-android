@@ -51,7 +51,7 @@ const ListTab = (store) => {
                                    left={props => <List.Icon {...props} icon="format-list-bulleted"/>}
                         />
                         <List.Item title="Tạo nhân viên" onPress={() => {
-
+                            navigation.navigate("CreateStaffScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="card-plus"/>}
                         />

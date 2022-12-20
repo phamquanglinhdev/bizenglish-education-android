@@ -65,7 +65,7 @@ const LogShowScreen = (store) => {
     )
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false)
         }, 500)
     }, [1])

@@ -40,7 +40,7 @@ const EditLogScreen = (store) => {
     }, [attachments])
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false)
         }, 5)
     }, [1])

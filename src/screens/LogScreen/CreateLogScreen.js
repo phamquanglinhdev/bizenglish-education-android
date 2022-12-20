@@ -41,7 +41,7 @@ const CreateLogScreen = (store) => {
         SetAttachment(attachments)
     }, [attachments])
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false)
         }, 5)
     }, [1])

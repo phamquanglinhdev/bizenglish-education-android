@@ -9,7 +9,8 @@ const StaffsScreen = (store) => {
     const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13]
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
+            console.log("data")
             setLoading(false)
         }, 5)
     }, [1])
@@ -26,9 +27,9 @@ const StaffsScreen = (store) => {
                         style={{borderRadius: 0}}
                         icon={"card-plus"}
                         onPress={() => {
-                            store.navigation.navigate("CreateGradeScreen")
+                            store.navigation.navigate("CreateStaffScreen")
                         }}
-                    >Tạo lớp học mới</Button>
+                    >Tạo nhân viên</Button>
                     <Button
                         mode={""}
                         style={{borderRadius: 0}}
@@ -62,8 +63,16 @@ const StaffsScreen = (store) => {
                                               }}>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
                                                 style={appStyle.tBody}>NV00{item}</Text></View>
-                                            <View style={[appStyle.cell, {width: 150}]}><Button style={appStyle.tBody}>Nguyễn
-                                                Văn A</Button></View>
+                                            <View style={[appStyle.cell, {width: 150}]}>
+                                                <Button
+                                                    onPress={() => {
+                                                        store.navigation.navigate("StaffShowScreen", {
+                                                            id: 1,
+                                                            name: "Phạm Quang Linh"
+                                                        })
+                                                    }}
+                                                    style={appStyle.tBody}>Nguyễn
+                                                    Văn A</Button></View>
                                             <View style={[appStyle.cell, {width: 100}]}><Text
                                                 style={appStyle.tBody}>Developer</Text></View>
                                             <View style={[appStyle.cell, {width: 200}]}><Text style={appStyle.tBody}>(+84)
@@ -74,10 +83,10 @@ const StaffsScreen = (store) => {
                                                 <View style={{flexDirection: "row"}}>
                                                     <Button icon={"pencil"}
                                                             onPress={() => {
-                                                                // store.navigation.navigate("EditGradeScreen", {
-                                                                //     id: key,
-                                                                //     name: "C00" + item
-                                                                // })
+                                                                store.navigation.navigate("EditStaffScreen", {
+                                                                    id: 1,
+                                                                    name: "Phạm Quang Linh"
+                                                                })
                                                             }}
                                                     >Sửa</Button>
                                                     <Button icon={"trash-can"}

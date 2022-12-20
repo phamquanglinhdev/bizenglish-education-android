@@ -30,7 +30,7 @@ const CreateGradeScreen = (store) => {
     const ClientList = [];
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false)
         }, 5)
     }, [1])
