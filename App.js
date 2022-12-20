@@ -24,10 +24,12 @@ import {useEffect, useRef, useState} from "react";
 import CreateStaffScreen from "./src/screens/StaffScreen/CreateStaffScreen";
 import EditStaffScreen from "./src/screens/StaffScreen/EditStaffScreen";
 import StaffShowScreen from "./src/screens/StaffScreen/StaffShowScreen";
+import setApi from "./src/store/actions/setApi";
 
 const Stack = createNativeStackNavigator();
 const store = createStore(allReducers);
 store.dispatch(setTheme("light"))
+store.dispatch(setApi("https://bizenglish-edu.net/api/"))
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -62,7 +64,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName={"HomeScreen"}>
+                <Stack.Navigator initialRouteName={"LoginScreen"}>
                     <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="DeleteScreen" component={DeleteScreen} options={{headerShown: false}}/>
@@ -86,7 +88,7 @@ export default function App() {
                     <Stack.Screen name="CreateStaffScreen" component={CreateStaffScreen}
                                   options={{title: "Tạo nhân viên"}}/>
                     <Stack.Screen name="EditStaffScreen" component={EditStaffScreen}
-                                  options={({route}) => ({title:route.params.name})}/>
+                                  options={({route}) => ({title: route.params.name})}/>
                     <Stack.Screen name="StaffShowScreen" component={StaffShowScreen}
                                   options={({route}) => ({title: route.params.name})}/>
                 </Stack.Navigator>
@@ -139,7 +141,7 @@ async function registerForPushNotificationsAsync() {
         }
         Notifications.getExpoPushTokenAsync().then((response) => {
             console.log(response.data)
-            alert(response.data)
+            // alert(response.data)
         });
 
         // console.log("Token:"+token);

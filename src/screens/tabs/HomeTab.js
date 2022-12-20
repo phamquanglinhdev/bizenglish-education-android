@@ -7,12 +7,14 @@ import {connect} from "react-redux";
 import YoutubeVideo from "../../components/YoutubeVideo";
 
 const HomeTab = (store) => {
+    const user = store.store.auth
+    console.log(store.store.auth)
     return (
         <View style={[appStyle.flexCenter, appStyle.bgMain]} flex={1}>
             <ImageBackground style={{flex: 1, padding: 0}} source={require("../../../assets/app-background.png")}>
                 <View
                     style={appStyle.headerBar}>
-                    <Text style={appStyle.headingText}>Xin chào , Phạm Quang Linh</Text>
+                    <Text style={appStyle.headingText}>Xin chào ,{user.name}</Text>
                     <TouchableOpacity
                         onPress={() => {
                             store.dispatch(setIndexTab(3))
@@ -20,7 +22,7 @@ const HomeTab = (store) => {
                         }}
                     >
                         <Image
-                            source={{uri: "https://toigingiuvedep.vn/wp-content/uploads/2021/06/hinh-anh-anime-cute-584x600.jpg"}}
+                            source={{uri: user.avatar}}
                             style={{
                                 width: 50,
                                 height: 50,

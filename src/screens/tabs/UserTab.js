@@ -5,17 +5,18 @@ import {Button, TextInput} from "react-native-paper";
 import {useState} from "react";
 
 const UserTab = (store) => {
-    const [name, setName] = useState("Phạm Quang Linh")
-    const [email, setEmail] = useState("Phamquanglinhdev@gmail.com")
-    const [phone, setPhone] = useState("+84904800240")
-    const [facebook, setFacebook] = useState("https://facebook.com/linhcuenini")
-    const [extra, setExtra] = useState([])
+    const user = store.store.auth
+    const [name, setName] = useState(user.name)
+    const [email, setEmail] = useState(user.email)
+    const [phone, setPhone] = useState(user.phone)
+    const [facebook, setFacebook] = useState(user.facebook)
+    const [extra, setExtra] = useState(user.extra)
     return (
         <ImageBackground style={appStyle.container} resizeMode={"cover"}
                          source={require("../../../assets/app-background.png")}>
             <Image
                 style={appStyle.userAvatar}
-                source={{uri: "https://phunugioi.com/wp-content/uploads/2020/10/anh-dai-dien-avt-anime-1.jpg"}}
+                source={{uri: user.avatar}}
             />
             <View style={[appStyle.materialContent, {marginTop: 150, paddingTop: 80, padding: 10}]}>
                 <ScrollView>

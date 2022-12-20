@@ -1,17 +1,27 @@
-import {ScrollView, Text, View} from "react-native";
+import {Linking, ScrollView, Text, View} from "react-native";
 import {Button, DataTable} from "react-native-paper";
 import {connect} from "react-redux";
 import {appStyle} from "../../Style/appStyle";
 import {useEffect, useState} from "react";
 import BeLanLoading from "../../components/BeLanLoading";
+import axios from "axios";
 
 const GradesScreen = (store) => {
-    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16];
+    const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setTimeout(() => {
+        console.log("Hi")
+        axios.post(store.store.config.api + "grades", {}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            setData(response.data)
             setLoading(false)
-        }, 5)
+        }).catch((error) => {
+            console.log(error.toJSON())
+            setLoading(false)
+        })
     }, [1])
     if (loading)
         return (
@@ -70,7 +80,7 @@ const GradesScreen = (store) => {
                             <View>
                                 {data.map((item, key) => {
                                     return (
-                                        <View key={item}
+                                        <View key={key}
                                               style={{
                                                   flexDirection: "row",
                                                   backgroundColor: key % 2 === 1 ? "rgba(255,255,255,0.21)" : "white"
@@ -80,60 +90,73 @@ const GradesScreen = (store) => {
                                                     style={{width: 100}}
                                                     onPress={() => {
                                                         store.navigation.navigate("GradeShowScreen", {
-                                                            id: key,
-                                                            name: "C00" + item
+                                                            id: item.id,
+                                                            name: item.name
                                                         })
                                                     }}
-                                                >C00{item}</Button>
+                                                >{item.name}</Button>
                                             </View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Phạm
-                                                Quang
-                                                Linh,
-                                                Nguyễn Minh Hải</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Võ
-                                                Thị
-                                                Mỹ
-                                                Linh, Võ
-                                                Nhật Hoàng</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Trần
-                                                Phương
-                                                Minh,
-                                                Phạm Quang Hùng</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Ngọc
-                                                Bích</Text></View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                {item.students.map((student) => (
+                                                    <Text key={student.id} style={appStyle.tBody}>{student.name}</Text>
+                                                ))}
+                                            </View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                {item.teachers.map((teacher) => (
+                                                    <Text key={teacher.id} style={appStyle.tBody}>{teacher.name}</Text>
+                                                ))}
+                                            </View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                {item.staffs.map((staff) => (
+                                                    <Text key={staff.id} style={appStyle.tBody}>{staff.name}</Text>
+                                                ))}
+                                            </View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                {item.clients.map((client) => (
+                                                    <Text key={client.id} style={appStyle.tBody}>{client.name}</Text>
+                                                ))}
+                                            </View>
                                             <View style={[appStyle.cell, {width: 100}]}>
-                                                <Button>Mở</Button>
+                                                <Button
+                                                    onPesss={() => {
+                                                        Linking.openURL(item.zoom).then()
+                                                    }}
+                                                >Mở</Button>
                                             </View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text
-                                                style={appStyle.tBody}>1.900.000</Text></View>
+                                                style={appStyle.tBody}>{item.pricing}</Text></View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text
-                                                style={appStyle.tBody}>6000</Text></View>
+                                                style={appStyle.tBody}>{item.minutes}</Text></View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text
-                                                style={appStyle.tBody}>5400</Text></View>
+                                                style={appStyle.tBody}>{item.remaining}</Text></View>
                                             <View style={[appStyle.cell, {width: 100}]}>
-                                                <Button>Mở</Button>
+                                                <Button
+                                                    onPesss={() => {
+                                                        Linking.openURL(item.attachment).then()
+                                                    }}
+                                                >Mở</Button>
                                             </View>
-                                            <View style={[appStyle.cell, {width: 150}]}><Text style={appStyle.tBody}>Đang
-                                                học</Text></View>
-                                            <View style={[appStyle.cell, {width: 150}]}><Text style={appStyle.tBody}>24-9-2022
-                                                19:00:15</Text></View>
+                                            <View style={[appStyle.cell, {width: 150}]}><Text
+                                                style={appStyle.tBody}>{item.status}</Text></View>
+                                            <View style={[appStyle.cell, {width: 150}]}><Text
+                                                style={appStyle.tBody}>{item.created}</Text></View>
                                             <View style={[appStyle.cell, {width: 180}]}>
                                                 <View style={{flexDirection: "row"}}>
                                                     <Button icon={"pencil"}
                                                             onPress={() => {
                                                                 store.navigation.navigate("EditGradeScreen", {
-                                                                    id: key,
-                                                                    name: "C00" + item
+                                                                    id: item.id,
+                                                                    name: item.name
                                                                 })
                                                             }}
                                                     >Sửa</Button>
                                                     <Button icon={"trash-can"}
                                                             onPress={() => {
                                                                 store.navigation.navigate("DeleteScreen", {
-                                                                    id: key,
-                                                                    name: "C00" + item,
+                                                                    id: item.id,
+                                                                    name: item.name,
                                                                     type: "grade",
-                                                                    message: "Bạn có chắc chắn muốn xoá lớp học?"
+                                                                    message: "Bạn có chắc chắn muốn xoá lớp " + item.name + " c?"
                                                                 })
                                                             }}
                                                     >Xoá</Button>
