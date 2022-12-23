@@ -3,12 +3,13 @@ import {BottomNavigation, Text} from 'react-native-paper';
 import {connect} from "react-redux";
 import HomeTab from "./tabs/HomeTab";
 import ListTab from "./tabs/ListTab";
-import {StatusBar} from "react-native";
+import {Platform, StatusBar, View} from "react-native";
 import NotificationTab from "./tabs/NotificationTab";
 import UserTab from "./tabs/UserTab";
 import SettingTab from "./tabs/SettingTab";
 import {CommonActions, StackActions} from "@react-navigation/native";
 import {useEffect} from "react";
+import BeLanIosBar from "../components/BeLanIosBar";
 
 const HomeScreen = (store) => {
     const [index, setIndex] = React.useState(0);
@@ -61,6 +62,9 @@ const HomeScreen = (store) => {
 
     return (
         <>
+            {Platform.OS === "ios" ?
+                <BeLanIosBar/>
+                : null}
             <StatusBar backgroundColor={"black"}/>
             <BottomNavigation
                 compact={true}

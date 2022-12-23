@@ -9,7 +9,7 @@ const LogsScreen = (store) => {
 
     const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     useEffect(() => {
-        setInterval(() => {
+        setTimeout(() => {
             setLoading(false)
         }, 5)
     }, [1])
