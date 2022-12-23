@@ -77,7 +77,7 @@ const StaffShowScreen = (store) => {
                 </Button>
                 <Button
                     onPress={() => {
-                        store.navigation.navigate("EditStaffScreen", {id: id})
+                        store.navigation.navigate("EditStaffScreen", {id: id, name: "Nguyễn Văn A"})
                     }}
                 >
                     Chỉnh sửa thông tin

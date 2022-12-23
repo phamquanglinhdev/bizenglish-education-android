@@ -1,4 +1,14 @@
-import {ImageBackground, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, View} from "react-native";
+import {
+    Alert,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    Text,
+    View
+} from "react-native";
 import {appStyle} from "../../Style/appStyle";
 import {connect} from "react-redux";
 import {Button, Chip, RadioButton, Snackbar, TextInput} from "react-native-paper";
@@ -6,9 +16,9 @@ import {CommonActions} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import MultiSelect from "react-native-multiple-select";
 import BeLanLoading from "../../components/BeLanLoading";
+import axios from "axios";
 
 const EditGradeScreen = (store) => {
-    console.log(store.route.params.id)
     const [name, setName] = useState("")
     const [zoom, setZoom] = useState("")
     const [pricing, setPricing] = useState("")
@@ -26,14 +36,51 @@ const EditGradeScreen = (store) => {
     const [teachers, setTeachers] = useState([])
     const [students, setStudents] = useState([])
     const [clients, setClients] = useState([])
-    const TeacherList = [];
-    const StudentList = [];
-    const ClientList = [];
+    const [TeacherList, setTeacherList] = useState([]);
+    const [StudentList, setStudentList] = useState([]);
+    const [ClientList, setClientList] = useState([]);
     const [loading, setLoading] = useState(true)
+    const redirectToHome = () => {
+        // store.navigation.dispatch(CommonActions.reset({
+        //     index: 1, routes: [{name: "HomeScreen"},]
+        // }))
+    }
     useEffect(() => {
-        setTimeout(() => {
+        axios.post(store.store.config.api + "grade/people", {}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            // console.log(response.data)
+            setTeacherList(response.data.teachers)
+            setStudentList(response.data.students)
+            setClientList(response.data.clients)
+        }).catch((error) => {
+            redirectToHome()
+        })
+        axios.post(store.store.config.api + "grade/edit", {id: store.route.params.id}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            console.log(response.data)
+            const data = response.data
+            setAttachment(data.attachment)
+            setClients(response.data.clients)
+            setInformation(data.information)
+            setMinutes(data.minutes)
+            setName(data.name)
+            setPricing(data.pricing)
+            setStatus(data.status)
+            setStudents(data.students)
+            setTeachers(data.teachers)
+            setTime(data.time)
+            setZoom(data.zoom)
             setLoading(false)
-        }, 5)
+        }).catch((error) => {
+            console.log(error)
+            redirectToHome()
+        })
     }, [1])
     if (loading)
         return (
@@ -380,13 +427,42 @@ const EditGradeScreen = (store) => {
                                 buttonColor={"#01a1bd"}
                                 style={{borderRadius: 0}}
                                 onPress={() => {
-                                    console.log(store)
-                                    store.navigation.dispatch(CommonActions.reset({
-                                        index: 1, routes: [{name: "HomeScreen"},]
-                                    }))
+                                    const data = {
+                                        id: store.route.params.id,
+                                        name: name,
+                                        pricing: pricing,
+                                        information: information,
+                                        attachment: attachment,
+                                        status: status,
+                                        minutes: minutes,
+                                        time: time,
+                                        zoom: zoom,
+                                        students: students,
+                                        clients: clients,
+                                        teachers: teachers,
+                                    }
+                                    console.log(data)
+                                    setLoading(true)
+                                    axios.post(store.store.config.api + "grade/update", data, {
+                                        headers: {
+                                            Authorization: store.store.token
+                                        }
+                                    }).then((response) => {
+                                        console.log(response.data)
+                                        store.navigation.dispatch(CommonActions.reset({
+                                            index: 1, routes: [{name: "SuccessScreen"},]
+                                        }))
+                                        setLoading(false)
+                                    }).catch((error) => {
+                                        setLoading(false)
+                                        console.log(error.toJSON())
+                                        Alert.alert("Lỗi", "Đã có lỗi xảy ra, vui lòng kiểm tra dữ liệu")
+                                    })
+
+
                                 }}
                             >
-                                Tạo lớp
+                                Cập nhật lớp
                             </Button>
                         </ScrollView>
                     </KeyboardAvoidingView>

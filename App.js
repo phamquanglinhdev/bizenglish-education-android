@@ -1,5 +1,5 @@
 import {StatusBar} from 'expo-status-bar';
-import {KeyboardAvoidingView, Platform, StyleSheet, Text, View} from 'react-native';
+import {Alert, BackHandler, KeyboardAvoidingView, Linking, Platform, StyleSheet, Text, View} from 'react-native';
 import {createStore} from "redux";
 import {allReducers} from "./src/store/reducers/allReducers";
 import {Provider} from "react-redux";
@@ -25,6 +25,19 @@ import CreateStaffScreen from "./src/screens/StaffScreen/CreateStaffScreen";
 import EditStaffScreen from "./src/screens/StaffScreen/EditStaffScreen";
 import StaffShowScreen from "./src/screens/StaffScreen/StaffShowScreen";
 import setApi from "./src/store/actions/setApi";
+import SuccessScreen from "./src/screens/SuccessScreen";
+import TeachersScreen from "./src/screens/TeacherScreen/TeachersScreen";
+import CreateTeacherScreen from "./src/screens/TeacherScreen/CreateTeacherScreen";
+import EditTeacherScreen from "./src/screens/TeacherScreen/EditTeacherScreen";
+import setToken from "./src/store/actions/setToken";
+import SetToken from "./src/store/actions/setToken";
+import setExpo from "./src/store/actions/setExpo";
+import SetExpo from "./src/store/actions/setExpo";
+import TeacherShowScreen from "./src/screens/TeacherScreen/TeacherShowScreen";
+import StudentsScreen from "./src/screens/StudentScreen/StudentsScreen";
+import CreateStudentScreen from "./src/screens/StudentScreen/CreateStudentScreen";
+import EditStudentScreen from "./src/screens/StudentScreen/EditStudentScreen";
+import StudentShowScreen from "./src/screens/StudentScreen/StudentShowScreen";
 
 const Stack = createNativeStackNavigator();
 const store = createStore(allReducers);
@@ -39,12 +52,19 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
+    const nativeVersion = "1.1.0"
+    const [hasUpdate, setHasUpdate] = useState(false)
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        if(nativeVersion!=="1.1.0"){
+            setHasUpdate(true)
+        }
+        registerForPushNotificationsAsync().then(token => {
+            setExpoPushToken(token)
+        });
 
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -61,13 +81,34 @@ export default function App() {
             Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
-    return (
+
+    if (hasUpdate)
+        return (
+            Alert.alert("Cập nhật", "Đã có bản cập nhật mới, vui lòng cập nhật để sử dụng",
+                [
+                    {
+                        text: "Huỷ",
+                        onPress: () => BackHandler.exitApp(),
+                        style: "cancel"
+                    },
+                    {
+                        text: "OK", onPress: () => {
+                            Linking.openURL("https://google.com").then()
+                            BackHandler.exitApp()
+                        }
+                    }
+                ]
+            )
+
+        )
+    else return (
         <Provider store={store}>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName={"LoginScreen"}>
                     <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="DeleteScreen" component={DeleteScreen} options={{headerShown: false}}/>
+                    <Stack.Screen name="SuccessScreen" component={SuccessScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="GradesScreen" component={GradesScreen} options={{title: "Danh sách lớp học"}}/>
                     <Stack.Screen name="CreateGradeScreen" component={CreateGradeScreen}
                                   options={{title: "Tạo lớp học"}}/>
@@ -83,6 +124,7 @@ export default function App() {
                                   options={({route}) => ({title: "Chỉnh sửa nhật ký : " + route.params.date})}/>
                     <Stack.Screen name="LogShowScreen" component={LogShowScreen}
                                   options={({route}) => ({title: "Nhật ký : " + route.params.date})}/>
+
                     <Stack.Screen name="StaffsScreen" component={StaffsScreen}
                                   options={{title: "Danh sách nhân viên"}}/>
                     <Stack.Screen name="CreateStaffScreen" component={CreateStaffScreen}
@@ -90,6 +132,24 @@ export default function App() {
                     <Stack.Screen name="EditStaffScreen" component={EditStaffScreen}
                                   options={({route}) => ({title: route.params.name})}/>
                     <Stack.Screen name="StaffShowScreen" component={StaffShowScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+
+                    <Stack.Screen name="TeachersScreen" component={TeachersScreen}
+                                  options={{title: "Danh sách giáo viên"}}/>
+                    <Stack.Screen name="CreateTeacherScreen" component={CreateTeacherScreen}
+                                  options={{title: "Tạo giáo viên"}}/>
+                    <Stack.Screen name="EditTeacherScreen" component={EditTeacherScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+                    <Stack.Screen name="TeacherShowScreen" component={TeacherShowScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+
+                    <Stack.Screen name="StudentsScreen" component={StudentsScreen}
+                                  options={{title: "Danh sách học sinh"}}/>
+                    <Stack.Screen name="CreateStudentScreen" component={CreateStudentScreen}
+                                  options={{title: "Tạo học sinh"}}/>
+                    <Stack.Screen name="EditStudentScreen" component={EditStudentScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+                    <Stack.Screen name="StudentShowScreen" component={StudentShowScreen}
                                   options={({route}) => ({title: route.params.name})}/>
                 </Stack.Navigator>
             </NavigationContainer>
@@ -140,8 +200,8 @@ async function registerForPushNotificationsAsync() {
             return;
         }
         Notifications.getExpoPushTokenAsync().then((response) => {
-            console.log(response.data)
-            // alert(response.data)
+            console.log("Token:" + response.data)
+            store.dispatch(SetExpo(response.data))
         });
 
         // console.log("Token:"+token);

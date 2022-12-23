@@ -288,7 +288,7 @@ const EditLogScreen = (store) => {
                                         SetAttachment(temp)
                                         setUploadModal(!uploadModal)
                                     }}
-                                    source={{uri: "http://192.168.181.199/bizenglish-app/public/app/upload"}}
+                                    source={{uri: "https://bizenglish-edu.net/app/upload"}}
                                 />
                             </View>
                         </Modal>

@@ -60,12 +60,12 @@ const ListTab = (store) => {
                         title="Giáo viên"
                         left={props => <List.Icon {...props} icon="account-tie-voice"/>}>
                         <List.Item title="Danh sách giáo viên" onPress={() => {
-
+                            navigation.navigate("TeachersScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="format-list-bulleted"/>}
                         />
                         <List.Item title="Tạo giáo viên" onPress={() => {
-
+                            navigation.navigate("CreateTeacherScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="card-plus"/>}
                         />
@@ -74,12 +74,12 @@ const ListTab = (store) => {
                         title="Học sinh"
                         left={props => <List.Icon {...props} icon="ticket-account"/>}>
                         <List.Item title="Danh sách học sinh" onPress={() => {
-
+                            navigation.navigate("StudentsScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="format-list-bulleted"/>}
                         />
                         <List.Item title="Tạo học sinh" onPress={() => {
-
+                            navigation.navigate("CreateStudentScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="card-plus"/>}
                         />

@@ -1,5 +1,5 @@
 import {Linking, ScrollView, Text, View} from "react-native";
-import {Button, DataTable} from "react-native-paper";
+import {Button, Chip, DataTable} from "react-native-paper";
 import {connect} from "react-redux";
 import {appStyle} from "../../Style/appStyle";
 import {useEffect, useState} from "react";
@@ -117,11 +117,14 @@ const GradesScreen = (store) => {
                                                 ))}
                                             </View>
                                             <View style={[appStyle.cell, {width: 100}]}>
-                                                <Button
-                                                    onPesss={() => {
-                                                        Linking.openURL(item.zoom).then()
-                                                    }}
-                                                >Mở</Button>
+                                                {item.zoom !== null ? (
+                                                    <Button
+                                                        onPress={() => {
+                                                            Linking.openURL(item.zoom.toString()).then()
+                                                            console.log("Hi")
+                                                        }}
+                                                    >Mở</Button>
+                                                ) : <Text>-</Text>}
                                             </View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text
                                                 style={appStyle.tBody}>{item.pricing}</Text></View>
@@ -130,11 +133,15 @@ const GradesScreen = (store) => {
                                             <View style={[appStyle.cell, {width: 150}]}><Text
                                                 style={appStyle.tBody}>{item.remaining}</Text></View>
                                             <View style={[appStyle.cell, {width: 100}]}>
-                                                <Button
-                                                    onPesss={() => {
-                                                        Linking.openURL(item.attachment).then()
-                                                    }}
-                                                >Mở</Button>
+                                                {item.attachment !== null ? (
+                                                        <Button
+                                                            onPress={() => {
+                                                                Linking.openURL(item.attachment.toString()).then()
+                                                                console.log(item.attachment)
+                                                            }}
+                                                        >Mở</Button>
+                                                    )
+                                                    : <Text>-</Text>}
                                             </View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text
                                                 style={appStyle.tBody}>{item.status}</Text></View>
@@ -156,7 +163,7 @@ const GradesScreen = (store) => {
                                                                     id: item.id,
                                                                     name: item.name,
                                                                     type: "grade",
-                                                                    message: "Bạn có chắc chắn muốn xoá lớp " + item.name + " c?"
+                                                                    message: "Bạn có chắc chắn muốn xoá lớp " + item.name + " ?"
                                                                 })
                                                             }}
                                                     >Xoá</Button>

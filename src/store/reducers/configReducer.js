@@ -18,6 +18,12 @@ const configReducer = (state = [], action) => {
                 ...state, api
             }
             break
+        case "SET_EXPO":
+            const expo = action.value
+            state = {
+                ...state, expo
+            }
+            break
     }
     return state
 };

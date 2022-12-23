@@ -160,7 +160,7 @@ const EditStaffScreen = (store) => {
                         setFacebook(r)
                     }}
                 />
-                <BeLanSelect2 parentCallback={getStudent} data={studentData}/>
+                <BeLanSelect2 parentCallback={getStudent} data={studentData} choose={students}/>
                 <TextInput
                     label={"Địa chỉ"}
                     mode={"outlined"}

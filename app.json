@@ -34,7 +34,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.linhcuenini.bizenglishedu"
     },
     "android": {
       "adaptiveIcon": {

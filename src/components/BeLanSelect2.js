@@ -8,23 +8,13 @@ const BeLanSelect2 = (props) => {
     const [show, isShow] = useState(false)
     const data = props.data
     const [dataFilter, setDataFilter] = useState(data)
-    const [choose, setChoose] = useState(
-        [
-            {
-                id: 1,
-                name: "Phạm Hồng Hạnh"
-            },
-            {
-                id: 2,
-                name: "Trần Thuỳ Trang"
-            }]
-    )
+    const [choose, setChoose] = useState(props.choose)
     useEffect(() => {
         props.parentCallback(choose)
     }, [choose])
     return (
         <View style={{flex: 1, paddingVertical: 10}}>
-            <Text style={{paddingBottom: 10}}>Học sinh quản lý:</Text>
+            <Text style={{paddingBottom: 10}}>{props.label ? props.label : "Lựa chọn:"}</Text>
             <View style={{padding: 5, flexDirection: "row", flexWrap: "wrap"}}>
                 {choose.map((item, key) => (
                     <Chip
@@ -69,7 +59,7 @@ const BeLanSelect2 = (props) => {
             <View style={{flexDirection: "row", alignItems: "center"}}>
                 <TextInput
                     style={{width: "70%"}}
-                    label={"Tìm học sinh"}
+                    label={"Tìm...."}
                     mode={"outlined"}
                     onFocus={() => {
                         isShow(true)

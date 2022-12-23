@@ -8,7 +8,6 @@ import YoutubeVideo from "../../components/YoutubeVideo";
 
 const HomeTab = (store) => {
     const user = store.store.auth
-    console.log(store.store.auth)
     return (
         <View style={[appStyle.flexCenter, appStyle.bgMain]} flex={1}>
             <ImageBackground style={{flex: 1, padding: 0}} source={require("../../../assets/app-background.png")}>
