@@ -28,7 +28,8 @@
       ]
     ],
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/236e2ce8-df39-48ef-a44d-ec891a4fb2ff"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -43,7 +44,10 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.linhcuenini.bizenglishedu",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -52,6 +56,9 @@
       "eas": {
         "projectId": "236e2ce8-df39-48ef-a44d-ec891a4fb2ff"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
