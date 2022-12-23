@@ -52,14 +52,14 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-    const nativeVersion = "1.1.0"
+    const nativeVersion = "1.1.2"
     const [hasUpdate, setHasUpdate] = useState(false)
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
     useEffect(() => {
-        if(nativeVersion!=="1.1.0"){
+        if(nativeVersion!=="1.1.2"){
             setHasUpdate(true)
         }
         registerForPushNotificationsAsync().then(token => {
