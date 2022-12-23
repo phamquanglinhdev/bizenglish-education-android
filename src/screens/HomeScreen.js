@@ -67,7 +67,8 @@ const HomeScreen = (store) => {
                 : null}
             <StatusBar backgroundColor={"black"}/>
             <BottomNavigation
-                compact={true}
+                compact={false}
+                animated={true}
                 navigationState={{index, routes}}
                 onIndexChange={setIndex}
                 renderScene={renderScene}

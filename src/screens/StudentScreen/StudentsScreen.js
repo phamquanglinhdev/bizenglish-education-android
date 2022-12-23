@@ -75,7 +75,7 @@ const StudentsScreen = (store) => {
                                                         name: "Nguyễn Thị Hồng Nhung"
                                                     })
                                                 }}>
-                                                    Nguyễn Thị Hồng Nhung
+                                                    Nguyễn Thị Hồng Minh
                                                 </Button>
                                             </View>
                                             <View style={[appStyle.cell, {width: 150}]}><Text style={appStyle.tBody}>Phạm

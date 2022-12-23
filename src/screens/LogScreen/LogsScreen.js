@@ -4,23 +4,37 @@ import {Button, Chip} from "react-native-paper";
 import {appStyle} from "../../Style/appStyle";
 import {useEffect, useState} from "react";
 import BeLanLoading from "../../components/BeLanLoading";
+import axios from "axios";
 
 const LogsScreen = (store) => {
-
-    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 5)
-    }, [1])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [data, setData] = useState([]);
+    const [more, setMore] = useState(true)
+    useEffect(() => {
+        setLoading(true)
+        axios.post(store.store.config.api + "logs", {
+            page: page
+        }, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            // console.log(response.data)
+            setData(response.data)
+            setLoading(false)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [page])
+
     if (loading)
         return (
             <BeLanLoading/>
         )
     else
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                     <Button
                         mode={""}
@@ -37,8 +51,9 @@ const LogsScreen = (store) => {
                     >Bộ lọc</Button>
                 </View>
                 <ScrollView horizontal={true}>
-                    <View style={{paddingBottom: 50}}>
+                    <View>
                         <View style={{flexDirection: "row", backgroundColor: "white"}}>
+                            <View style={[appStyle.cell, {width: 80}]}><Text style={appStyle.tHead}>ID</Text></View>
                             <View style={[appStyle.cell, {width: 150}]}><Text style={appStyle.tHead}>Ngày</Text></View>
                             <View style={[appStyle.cell, {width: 120}]}><Text style={appStyle.tHead}>Bắt
                                 đầu</Text></View>
@@ -69,87 +84,127 @@ const LogsScreen = (store) => {
                             <View style={[appStyle.cell, {width: 200}]}><Text style={appStyle.tHead}>Hoạt
                                 động</Text></View>
                         </View>
-                        <ScrollView>
-                            <View>
+                        <ScrollView
+                            onMomentumScrollEnd={() => {
+
+                            }}
+                        >
+                            <View style={{paddingBottom: 40}}>
                                 {data.map((item, key) => {
                                     return (
-                                        <View key={item}
+                                        <View key={item.id}
                                               style={{
                                                   flexDirection: "row",
                                                   backgroundColor: key % 2 === 1 ? "rgba(255,255,255,0.21)" : "white"
                                               }}>
+                                            <View style={[appStyle.cell, {width: 80}]}>
+                                                <Text>#{item.id}</Text>
+                                            </View>
                                             <View style={[appStyle.cell, {width: 150}]}>
                                                 <Button
                                                     onPress={() => {
                                                         store.navigation.navigate("LogShowScreen", {
-                                                            id: key,
-                                                            date: "20-11-2022",
+                                                            id: item.id,
+                                                            date: item.date,
                                                         })
                                                     }}
-                                                    style={appStyle.tBody}>20-11-2022</Button></View>
+                                                    style={appStyle.tBody}>{item.date}</Button></View>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
-                                                style={appStyle.tBody}>19:00</Text></View>
+                                                style={appStyle.tBody}>{item.start}</Text></View>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
-                                                style={appStyle.tBody}>20:00</Text></View>
+                                                style={appStyle.tBody}>{item.end}</Text></View>
                                             <View style={[appStyle.cell, {width: 120}]}>
                                                 <Button
                                                     onPress={() => {
                                                         store.navigation.navigate("GradeShowScreen", {
-                                                            id: 0,
-                                                            name: "C001"
+                                                            id: item.grade.id,
+                                                            name: item.grade.name
                                                         })
                                                     }}
-                                                >C001</Button>
+                                                >{item.grade.name}</Button>
                                             </View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Đình
-                                                Cảnh, Minh Long</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Võ
-                                                Thị
-                                                Mỹ Linh</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>PING
-                                                (ms Vân)</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Unit
-                                                3
-                                                Level 1 Family</Text></View>
+                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>
+                                                {item.students.map((student, key) =>
+                                                    <Button key={student.id}
+                                                            onPress={() => {
+                                                                store.navigation.navigate("StudentShowScreen", {
+                                                                    id: student.id,
+                                                                    name: student.name,
+                                                                })
+                                                            }}
+                                                    >{student.name}</Button>
+                                                )}
+                                            </Text></View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                <Button style={appStyle.tBody}
+                                                        onPress={() => {
+                                                            store.navigation.navigate("TeacherShowScreen", {
+                                                                id: item.teachers.id,
+                                                                name: item.teachers.name,
+                                                            })
+                                                        }}
+                                                >{item.teachers.name}
+                                                </Button>
+                                            </View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                {item.clients.map((client, key) =>
+                                                    <Button
+                                                        key={client.id}
+                                                        onPress={() => {
+                                                            store.navigation.navigate("ClientShowScreen", {
+                                                                id: client.id,
+                                                                name: client.name,
+                                                            })
+                                                        }}
+                                                    >{client.name}</Button>
+                                                )}
+                                            </View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                <Text style={appStyle.tBody}>{item.lesson}</Text>
+                                            </View>
                                             <View style={[appStyle.cell, {width: 100}]}>
                                                 <Button
                                                     onPress={() => {
                                                         store.navigation.navigate("LogShowScreen", {
-                                                            id: item,
-                                                            date: "20-11-2022"
+                                                            id: item.id,
+                                                            date: item.date
                                                         })
                                                     }}
                                                     icon={"youtube"} textColor={"red"}>Xem</Button>
                                             </View>
                                             <View style={[appStyle.cell, {width: 100}]}><Text
-                                                style={appStyle.tBody}>60</Text></View>
+                                                style={appStyle.tBody}>{item.duration} phút</Text></View>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
-                                                style={appStyle.tBody}>120.000</Text></View>
+                                                style={appStyle.tBody}>{item.hourSalary}</Text></View>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
-                                                style={appStyle.tBody}>240.000</Text></View>
+                                                style={appStyle.tBody}>{item.logSalary}</Text></View>
                                             <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Học
                                                 viên và giáo viên vào đúng giờ.</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Học
-                                                sinh hủy buổi học thứ Ba ngày 13/12/2022 lúc 18:22 và có đề nghị học bù
-                                                vào
-                                                thứ Tư 14/12/2022 </Text></View>
+                                            <View style={[appStyle.cell, {width: 300}]}>
+                                                <Text style={appStyle.tBody}>
+                                                    {item.assessment}
+                                                </Text></View>
                                             <View style={[appStyle.cell, {width: 150}]}>
-                                                <Button icon={"link"}>Mở</Button>
+                                                {item.attachments.length !== 0 ?
+                                                    (item.attachments.map((item, key) =>
+                                                        <Text>{item}</Text>))
+                                                    : <Text>-</Text>
+                                                }
                                             </View>
                                             <View style={[appStyle.cell, {width: 200}]}>
                                                 <View style={{flexDirection: "row"}}>
                                                     <Button icon={"pencil"}
                                                             onPress={() => {
                                                                 store.navigation.navigate("EditLogScreen", {
-                                                                    id: key,
-                                                                    date: Date.now().toString(),
+                                                                    id: item.id,
+                                                                    date: item.date,
                                                                 })
                                                             }}
                                                     >Sửa</Button>
                                                     <Button icon={"trash-can"}
                                                             onPress={() => {
                                                                 store.navigation.navigate("DeleteScreen", {
-                                                                    id: key,
+                                                                    id: item.id,
                                                                     type: "log",
                                                                     message: "Bạn có chắc chắn muốn xoá nhật ký ?"
                                                                 })
@@ -164,6 +219,21 @@ const LogsScreen = (store) => {
                         </ScrollView>
                     </View>
                 </ScrollView>
+                <View style={{margin: 20, flexDirection: "row", justifyContent: "center"}}>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page - 1)
+                        }}
+                    > {"<<"} </Button>
+                    <Button>{page}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 1)
+                        }}
+                    > {">>"}</Button>
+                </View>
             </View>
         )
 }

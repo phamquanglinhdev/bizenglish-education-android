@@ -1,33 +1,46 @@
-import {appStyle} from "../../Style/appStyle";
-import {ScrollView, TouchableOpacity, View} from "react-native";
+import {ScrollView, Text, View} from "react-native";
+import NotifyItem from "../../components/NotifyItem";
 import {connect} from "react-redux";
-import {Button, Card, Paragraph, Text, Title} from "react-native-paper";
+import {useState} from "react";
 
 const NotificationTab = (store) => {
-    const data = [1, 2, 3, 4, 5, 6]
+    const [notifications, setNotification] = useState([
+        {
+            name: "Hôm nay",
+            notify: [1, 2, 3, 4, 5, 6]
+        },
+        {
+            name: "Hôm qua",
+            notify: [1, 2, 3, 4, 5, 6]
+        },
+    ])
     return (
-        <View style={[appStyle.container]}>
-            <ScrollView>
-                <TouchableOpacity style={[appStyle.card, appStyle.unread]}>
-                    <Text style={appStyle.cardTitle}>Phản hồi chưa đọc</Text>
-                    <Text style={appStyle.cardSub}>12:15:21 12-12-2022</Text>
-                    <Text style={appStyle.cardContent}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat tristique libero, ut
-                        rhoncus lectus viverra id.
-                    </Text>
-                </TouchableOpacity>
-                {data.map((itemm, key) =>
-                    <TouchableOpacity key={key} style={appStyle.card}>
-                        <Text style={appStyle.cardTitle}>Phản hồi từ học sinh</Text>
-                        <Text style={appStyle.cardSub}>12:15:21 12-12-2022</Text>
-                        <Text style={appStyle.cardContent}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat tristique libero, ut
-                            rhoncus lectus viverra id.
-                        </Text>
-                    </TouchableOpacity>
+        <ScrollView>
+            <View style={{flex: 1, backgroundColor: "#f1ecec", padding: 10}}>
+                {notifications.map((item, key) =>
+                    <View key={key}>
+                        <Text
+                            style={{
+                                padding: 20,
+                                fontWeight: "bold",
+                                color: "rgba(0,0,0,0.38)",
+                                textAlign: "center"
+                            }}>{item.name}</Text>
+                        {item.notify.map((sub, k) =>
+                            <NotifyItem
+                                key={k}
+                                icon={"https://www.dungplus.com/wp-content/uploads/2019/12/girl-xinh-600x600.jpg"}
+                                title={"Thông báo " + item.name + " " + sub}
+                                message={"Đây là nội dung thông báo mẫu, chúc bạn nhỏ một ngày tốt lành như hũng ngày tốt lành khác nhé"}
+                                time={"11:19 am"}
+                                navigation={store.route.navigation}
+                            />
+                        )}
+                    </View>
                 )}
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
+
     )
 }
 export default connect(state => ({store: state}))(NotificationTab);

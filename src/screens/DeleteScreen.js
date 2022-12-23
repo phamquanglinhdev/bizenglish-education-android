@@ -10,7 +10,6 @@ import BeLanLoading from "../components/BeLanLoading";
 const DeleteScreen = (store) => {
     const [loading, setLoading] = useState(false)
     const params = store.route.params;
-    console.log(params)
     if (loading)
         return (
             <BeLanLoading/>
@@ -43,12 +42,10 @@ const DeleteScreen = (store) => {
                                     Authorization: store.store.token
                                 }
                             }).then((response) => {
-                                console.log(response.data)
                                 store.navigation.dispatch(CommonActions.reset({
                                     index: 1, routes: [{name: "HomeScreen"},]
                                 }))
                             }).catch((error) => {
-                                console.log(error)
                                 setLoading(false)
                                 Alert.alert("Không thể xoá","Đã xảy ra lỗi")
                             })

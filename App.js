@@ -38,6 +38,15 @@ import StudentsScreen from "./src/screens/StudentScreen/StudentsScreen";
 import CreateStudentScreen from "./src/screens/StudentScreen/CreateStudentScreen";
 import EditStudentScreen from "./src/screens/StudentScreen/EditStudentScreen";
 import StudentShowScreen from "./src/screens/StudentScreen/StudentShowScreen";
+import ClientsScreen from "./src/screens/ClientScreen/ClientsScreen";
+import CreateClientScreen from "./src/screens/ClientScreen/CreateClientScreen";
+import EditClientScreen from "./src/screens/ClientScreen/EditClientScreen";
+import ClientShowScreen from "./src/screens/ClientScreen/ClientShowScreen";
+import CustomersScreen from "./src/screens/CustomerScreen/CustomersScreen";
+import CreateCustomerScreen from "./src/screens/CustomerScreen/CreateCustomerScreen";
+import EditCustomerScreen from "./src/screens/CustomerScreen/EditCustomerScreen";
+import CustomerShowScreen from "./src/screens/CustomerScreen/CustomerShowScreen";
+import NotificationScreen from "./src/screens/NotificationScreen/NotificationScreen";
 
 const Stack = createNativeStackNavigator();
 const store = createStore(allReducers);
@@ -52,14 +61,14 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-    const nativeVersion = "1.1.2"
+    const nativeVersion = "1.1.1"
     const [hasUpdate, setHasUpdate] = useState(false)
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
     useEffect(() => {
-        if(nativeVersion!=="1.1.2"){
+        if (nativeVersion !== "1.1.1") {
             setHasUpdate(true)
         }
         registerForPushNotificationsAsync().then(token => {
@@ -109,6 +118,7 @@ export default function App() {
                     <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="DeleteScreen" component={DeleteScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="SuccessScreen" component={SuccessScreen} options={{headerShown: false}}/>
+                    <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{title:"Chi tiết thông báo"}}/>
                     <Stack.Screen name="GradesScreen" component={GradesScreen} options={{title: "Danh sách lớp học"}}/>
                     <Stack.Screen name="CreateGradeScreen" component={CreateGradeScreen}
                                   options={{title: "Tạo lớp học"}}/>
@@ -150,6 +160,24 @@ export default function App() {
                     <Stack.Screen name="EditStudentScreen" component={EditStudentScreen}
                                   options={({route}) => ({title: route.params.name})}/>
                     <Stack.Screen name="StudentShowScreen" component={StudentShowScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+
+                    <Stack.Screen name="ClientsScreen" component={ClientsScreen}
+                                  options={{title: "Danh sách đối tác"}}/>
+                    <Stack.Screen name="CreateClientScreen" component={CreateClientScreen}
+                                  options={{title: "Tạo đối tác"}}/>
+                    <Stack.Screen name="EditClientScreen" component={EditClientScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+                    <Stack.Screen name="ClientShowScreen" component={ClientShowScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+
+                    <Stack.Screen name="CustomersScreen" component={CustomersScreen}
+                                  options={{title: "Danh sách khách hàng"}}/>
+                    <Stack.Screen name="CreateCustomerScreen" component={CreateCustomerScreen}
+                                  options={{title: "Tạo khách hàng"}}/>
+                    <Stack.Screen name="EditCustomerScreen" component={EditCustomerScreen}
+                                  options={({route}) => ({title: route.params.name})}/>
+                    <Stack.Screen name="CustomerShowScreen" component={CustomerShowScreen}
                                   options={({route}) => ({title: route.params.name})}/>
                 </Stack.Navigator>
             </NavigationContainer>

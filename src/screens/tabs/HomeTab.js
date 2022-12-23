@@ -34,7 +34,8 @@ const HomeTab = (store) => {
                 </View>
                 <View style={appStyle.materialContent}>
                     <ScrollView>
-                        <YoutubeVideo/>
+                        {/*<YoutubeVideo/>*/}
+
                     </ScrollView>
                 </View>
             </ImageBackground>

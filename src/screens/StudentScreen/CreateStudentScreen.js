@@ -136,7 +136,7 @@ const CreateStudentScreen = (store) => {
                     <Chip key={key} style={{marginBottom: 10}}
                           icon={"trash-can"}
                           onPress={() => {
-                              SetAttachment(attachments.filter(a => a !== item))
+                              setFile(file.filter(a => a !== item))
                           }}
                     >{item}</Chip>
                 ))}

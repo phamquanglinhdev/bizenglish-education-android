@@ -1,6 +1,6 @@
 import {Image, KeyboardAvoidingView, Platform, ScrollView, Text, View, Modal} from "react-native";
 import {appStyle} from "../../Style/appStyle";
-import {connect} from "react-redux";
+import {connect, Selector} from "react-redux";
 import {useCallback, useEffect, useState} from "react";
 import {Button, Chip, TextInput} from 'react-native-paper';
 import {DatePickerInput, TimePickerModal} from 'react-native-paper-dates';
@@ -10,8 +10,11 @@ import {Until} from "../../components/getYoutubeId";
 import BeLanCute from "../../components/BeLanCute";
 import WebView from "react-native-webview";
 import BeLanLoading from "../../components/BeLanLoading";
+import {Picker as SelectPicker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateLogScreen = (store) => {
+    const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(true)
     const [lesson, setLesson] = useState("")
     const [information, setInformation] = useState("")
@@ -20,7 +23,7 @@ const CreateLogScreen = (store) => {
     const [attachments, SetAttachment] = useState([])
     const [uploadModal, setUploadModal] = useState(false)
     const [youtubeInfo, setYoutubeInfo] = useState(false)
-    const [date, setDate] = useState(Date.now())
+    const [date, setDate] = useState(new Date(Date.now()))
     const [start, setStart] = useState("00:00")
     const [end, setEnd] = useState("00:00")
     const [startVisible, setStartVisible] = useState(false)
@@ -31,6 +34,10 @@ const CreateLogScreen = (store) => {
     const [youtubeUrl, setYoutubeUrl] = useState("")
     const [video, setVideo] = useState({})
     const [status, setStatus] = useState([])
+    const [grades, setGrades] = useState([])
+    const [grade, setGrade] = useState()
+    const [teacher, setTeacher] = useState()
+    const [teachers, setTeachers] = useState([])
     const callbackFunction = (childData) => {
         setStatus(childData)
     }
@@ -41,31 +48,95 @@ const CreateLogScreen = (store) => {
         SetAttachment(attachments)
     }, [attachments])
     useEffect(() => {
-        setTimeout(() => {
+        axios.post(store.store.config.api + "log/create", {}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            setGrades(response.data.grades)
+            setTeachers(response.data.teachers)
             setLoading(false)
-        }, 5)
+        }).catch((error) => {
+            console.error()
+        })
     }, [1])
     if (loading)
         return (
-           <BeLanLoading/>
+            <BeLanLoading/>
         )
     else
         return (
             <View style={appStyle.container}>
                 <ScrollView>
                     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null}>
-                        <DatePickerInput
-                            mode={"outlined"}
-                            locale="en"
-                            label="Ngày"
-                            value={date}
-                            onChange={(date) => {
-                                setDate(date)
-                                console.log("date:" + date)
-                            }}
-                            inputMode="start"
+                        <Text style={{marginBottom: 5}}>Điểm danh cho lớp:</Text>
+                        <SelectPicker
+                            mode={"dropdown"}
                             style={appStyle.textInput}
+                            selectedValue={grade}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setGrade(itemValue)
+                            }>
+                            {grades.map((item, key) =>
+                                <SelectPicker.Item key={item.id} label={item.name} value={item.id}/>
+                            )}
+                        </SelectPicker>
+                        {store.store.auth.type <= 0 ?
+                            (
+                                <View>
+                                    <Text style={{marginVertical: 5}}>Điểm danh hộ giáo viên :</Text>
+                                    <SelectPicker
+                                        mode={"dropdown"}
+                                        style={appStyle.textInput}
+                                        selectedValue={teacher}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            setTeacher(itemValue)
+                                        }>
+                                        {teachers.map((item, key) =>
+                                            <SelectPicker.Item key={item.id} label={item.name} value={item.id}/>
+                                        )}
+                                    </SelectPicker>
+                                </View>
+                            )
+                            : null
+                        }
+                        <TextInput
+                            value={date.toLocaleDateString()}
+                            style={appStyle.textInput}
+                            label={"Ngày"}
+                            mode={"outlined"}
+                            editable={false}
+                            right={<TextInput.Icon onPress={() => {
+                                setShow(true)
+                            }} icon="calendar"/>}
                         />
+                        {show ?
+                            <DateTimePicker
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                onChange={(event, select) => {
+                                    setShow(false)
+                                    setDate(select)
+                                }}
+                                onDismiss={() => {
+                                    setShow(false)
+                                }}
+                            /> : null
+                        }
+
+                        {/*<DatePickerInput*/}
+                        {/*    mode={"outlined"}*/}
+                        {/*    locale="en"*/}
+                        {/*    label="Ngày"*/}
+                        {/*    value={date}*/}
+                        {/*    onChange={(date) => {*/}
+                        {/*        setDate(date)*/}
+                        {/*        console.log("date:" + date)*/}
+                        {/*    }}*/}
+                        {/*    inputMode="start"*/}
+                        {/*    style={appStyle.textInput}*/}
+                        {/*/>*/}
                         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                             <TextInput
                                 editable={false}
@@ -320,10 +391,36 @@ const CreateLogScreen = (store) => {
                             buttonColor={"#01a1bd"}
                             style={{borderRadius: 0}}
                             onPress={() => {
+                                const log = {
+                                    grade: grade,
+                                    teacher: teacher,
+                                    date: date,
+                                    start: start,
+                                    end: end,
+                                    duration: duration,
+                                    hourSalary: hourSalary,
+                                    logSalary: logSalary,
+                                    lesson: lesson,
+                                    information: information,
+                                    video: video,
+                                    status: status,
+                                    assessment: assessment,
+                                    question: question,
+                                    attachments: attachments,
+                                }
+                                axios.post(store.store.config.api + "log/store", log, {
+                                    headers: {
+                                        Authorization: store.store.token
+                                    }
+                                }).then((response) => {
+                                    console.log(response.data)
+                                }).catch((error) => {
+                                    console.log(error.toJSON())
+                                })
                                 // store.navigation.dispatch(CommonActions.reset({
                                 //     index: 1, routes: [{name: "HomeScreen"},]
                                 // }))
-                                console.log(lesson)
+                                console.log(log)
                             }}
                         >
                             Tạo nhật ký

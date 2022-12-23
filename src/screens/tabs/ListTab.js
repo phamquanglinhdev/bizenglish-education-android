@@ -85,33 +85,34 @@ const ListTab = (store) => {
                         />
                     </List.Accordion>
                     <List.Accordion
-                        title="Khách hàng"
-                        left={props => <List.Icon {...props} icon="account-cash"/>}>
-                        <List.Item title="Danh sách khách hàng" onPress={() => {
-
+                        title="Đối tác"
+                        left={props => <List.Icon {...props} icon="account-details"/>}>
+                        <List.Item title="Danh sách đối tác" onPress={() => {
+                            navigation.navigate("ClientsScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="format-list-bulleted"/>}
                         />
-                        <List.Item title="Tạo khách hàng" onPress={() => {
-
+                        <List.Item title="Tạo đối tác" onPress={() => {
+                            navigation.navigate("CreateClientScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="card-plus"/>}
                         />
                     </List.Accordion>
                     <List.Accordion
-                        title="Đối tác"
-                        left={props => <List.Icon {...props} icon="account-details"/>}>
-                        <List.Item title="Danh sách đối tác" onPress={() => {
-
+                        title="Khách hàng"
+                        left={props => <List.Icon {...props} icon="account-cash"/>}>
+                        <List.Item title="Danh sách khách hàng" onPress={() => {
+                            navigation.navigate("CustomersScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="format-list-bulleted"/>}
                         />
-                        <List.Item title="Tạo đối tác" onPress={() => {
-
+                        <List.Item title="Tạo khách hàng" onPress={() => {
+                            navigation.navigate("CreateCustomerScreen")
                         }}
                                    left={props => <List.Icon {...props} icon="card-plus"/>}
                         />
                     </List.Accordion>
+
                     <List.Accordion
                         title="Bộ Sách"
                         left={props => <List.Icon {...props} icon="bookshelf"/>}>
@@ -145,7 +146,6 @@ const ListTab = (store) => {
                         left={props => <List.Icon {...props} icon="file-document-multiple"/>}
                         right={props => <></>}
                         onPress={() => {
-                            console.log("file")
                         }}
                     >
                     </List.Accordion>

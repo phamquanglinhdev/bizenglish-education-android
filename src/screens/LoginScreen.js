@@ -14,7 +14,6 @@ import * as Notifications from "expo-notifications";
 import SetExpo from "../store/actions/setExpo";
 
 const LoginScreen = (store) => {
-    console.log(store.store)
     const [visible, setVisible] = useState(false)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -49,8 +48,7 @@ const LoginScreen = (store) => {
                     }
                 }).then((back) => {
                 }).catch((er) => {
-                    console.log(store.store)
-                    // console.log(error.toJSON())
+
                 })
             });
             store.dispatch(setAuth(response.data))
@@ -63,7 +61,7 @@ const LoginScreen = (store) => {
                 })
             )
         }).catch((error) => {
-            console.log(error)
+
         })
     }
     const [loading, setLoading] = useState(true)
@@ -114,15 +112,13 @@ const LoginScreen = (store) => {
                         mode={"contained"}
                         buttonColor={"#01a1bd"}
                         onPress={() => {
-                            console.log(email)
-                            console.log(password)
+
                             setLoading(true)
                             store.dispatch(setIndexTab(0))
                             axios.post(store.store.config.api + "login", {
                                 email: email,
                                 password: password,
                             }).then((response) => {
-                                // console.log(response.data)
                                 store.dispatch(setToken(response.data.token))
                                 save("token", response.data.token).then()
                                 tryGetInfo(response.data.token)
