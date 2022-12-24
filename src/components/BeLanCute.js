@@ -4,6 +4,7 @@ import {appStyle} from "../Style/appStyle";
 import {useEffect, useState} from "react";
 
 const BeLanCute = (props) => {
+
     const options = [
         {id: 0, label: "Học sinh và giáo viên vào đúng giờ"},
         {id: 1, label: "Học sinh muộn"},
@@ -23,6 +24,22 @@ const BeLanCute = (props) => {
         props.parentCallback(contain)
     }, [contain])
     useEffect(() => {
+        if (props.old !== undefined) {
+            const old = props.old
+            console.log(old.name)
+            options.forEach((option) => {
+                if (option.id.toString() === old.name) {
+                    setSelected(option.label)
+                    if (option.id !== 0) {
+                        setSubShow(true)
+                        setTime(old.time.toString())
+                    }
+                }
+            })
+        }
+    }, [props.old])
+    useEffect(() => {
+
         setContain([{
             name: name,
             time: time,
@@ -66,6 +83,7 @@ const BeLanCute = (props) => {
             </ScrollView>
             <View display={subShow ? "flex" : "none"}>
                 <TextInput
+                    value={time}
                     style={appStyle.textInput}
                     mode={"outlined"}
                     label={"Thời gian"}

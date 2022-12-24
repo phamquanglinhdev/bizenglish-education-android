@@ -163,14 +163,16 @@ const LogsScreen = (store) => {
                                                 <Text style={appStyle.tBody}>{item.lesson}</Text>
                                             </View>
                                             <View style={[appStyle.cell, {width: 100}]}>
-                                                <Button
-                                                    onPress={() => {
-                                                        store.navigation.navigate("LogShowScreen", {
-                                                            id: item.id,
-                                                            date: item.date
-                                                        })
-                                                    }}
-                                                    icon={"youtube"} textColor={"red"}>Xem</Button>
+                                                {item.video !== null ?
+                                                    <Button
+                                                        onPress={() => {
+                                                            store.navigation.navigate("LogShowScreen", {
+                                                                id: item.id,
+                                                                date: item.date
+                                                            })
+                                                        }}
+                                                        icon={"youtube"} textColor={"red"}>Xem</Button>
+                                                    : <Text>-</Text>}
                                             </View>
                                             <View style={[appStyle.cell, {width: 100}]}><Text
                                                 style={appStyle.tBody}>{item.duration} phút</Text></View>
@@ -178,8 +180,8 @@ const LogsScreen = (store) => {
                                                 style={appStyle.tBody}>{item.hourSalary}</Text></View>
                                             <View style={[appStyle.cell, {width: 120}]}><Text
                                                 style={appStyle.tBody}>{item.logSalary}</Text></View>
-                                            <View style={[appStyle.cell, {width: 300}]}><Text style={appStyle.tBody}>Học
-                                                viên và giáo viên vào đúng giờ.</Text></View>
+                                            <View style={[appStyle.cell, {width: 300}]}><Text
+                                                style={appStyle.tBody}>{item.status}</Text></View>
                                             <View style={[appStyle.cell, {width: 300}]}>
                                                 <Text style={appStyle.tBody}>
                                                     {item.assessment}

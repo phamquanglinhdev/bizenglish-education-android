@@ -1,16 +1,23 @@
-import {useEffect, useState} from "react";
-import {Image, KeyboardAvoidingView, Modal, Platform, ScrollView, Text, View} from "react-native";
+import {Image, KeyboardAvoidingView, Platform, ScrollView, Text, View, Modal} from "react-native";
 import {appStyle} from "../../Style/appStyle";
-import {DatePickerInput, TimePickerModal} from "react-native-paper-dates";
-import {Button, Chip, TextInput} from "react-native-paper";
-import {Until} from "../../components/getYoutubeId";
+import {connect, Selector} from "react-redux";
+import {useCallback, useEffect, useState} from "react";
+import {Button, Chip, TextInput} from 'react-native-paper';
+import {DatePickerInput, TimePickerModal} from 'react-native-paper-dates';
 import axios from "axios";
+import {CommonActions} from "@react-navigation/native";
+import {Until} from "../../components/getYoutubeId";
 import BeLanCute from "../../components/BeLanCute";
 import WebView from "react-native-webview";
-import {connect} from "react-redux";
 import BeLanLoading from "../../components/BeLanLoading";
+import {Picker as SelectPicker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const EditLogScreen = (store) => {
+    const id = store.route.params.id
+    const [oldCute, setOldCute] = useState(undefined)
+    const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [lesson, setLesson] = useState("")
     const [information, setInformation] = useState("")
     const [question, setQuestion] = useState("")
@@ -18,7 +25,7 @@ const EditLogScreen = (store) => {
     const [attachments, SetAttachment] = useState([])
     const [uploadModal, setUploadModal] = useState(false)
     const [youtubeInfo, setYoutubeInfo] = useState(false)
-    const [date, setDate] = useState(Date.now())
+    const [date, setDate] = useState(new Date(Date.now()))
     const [start, setStart] = useState("00:00")
     const [end, setEnd] = useState("00:00")
     const [startVisible, setStartVisible] = useState(false)
@@ -38,11 +45,35 @@ const EditLogScreen = (store) => {
     useEffect(() => {
         SetAttachment(attachments)
     }, [attachments])
-    const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setTimeout(() => {
+        axios.post(store.store.config.api + "log/edit", {id: id}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
             setLoading(false)
-        }, 5)
+            setAssessment(response.data.assessment)
+            SetAttachment(response.data.attachments)
+            setDate(new Date(response.data.date))
+            setStart(response.data.start)
+            setEnd(response.data.end)
+            setDuration(response.data.duration)
+            setHourSalary(response.data.hourSalary)
+            setLogSalary(response.data.logSalary)
+            setLesson(response.data.lesson)
+            setInformation(response.data.information)
+            if (response.data.video != null) {
+                setVideo(JSON.parse(response.data.video))
+                console.log(video)
+                setYoutubeUrl(JSON.parse(response.data.video).url)
+            }
+            setStatus(response.data.status)
+            setOldCute(response.data.status[0])
+            setQuestion(response.data.homework)
+
+        }).catch((error) => {
+            console.error()
+        })
     }, [1])
     if (loading)
         return (
@@ -53,18 +84,43 @@ const EditLogScreen = (store) => {
             <View style={appStyle.container}>
                 <ScrollView>
                     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null}>
-                        <DatePickerInput
-                            mode={"outlined"}
-                            locale="en"
-                            label="Ngày"
-                            value={date}
-                            onChange={(date) => {
-                                setDate(date)
-                                console.log("date:" + date)
-                            }}
-                            inputMode="start"
+                        <TextInput
+                            value={date.toLocaleDateString()}
                             style={appStyle.textInput}
+                            label={"Ngày"}
+                            mode={"outlined"}
+                            editable={false}
+                            right={<TextInput.Icon onPress={() => {
+                                setShow(true)
+                            }} icon="calendar"/>}
                         />
+                        {show ?
+                            <DateTimePicker
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                onChange={(event, select) => {
+                                    setShow(false)
+                                    setDate(select)
+                                }}
+                                onDismiss={() => {
+                                    setShow(false)
+                                }}
+                            /> : null
+                        }
+
+                        {/*<DatePickerInput*/}
+                        {/*    mode={"outlined"}*/}
+                        {/*    locale="en"*/}
+                        {/*    label="Ngày"*/}
+                        {/*    value={date}*/}
+                        {/*    onChange={(date) => {*/}
+                        {/*        setDate(date)*/}
+                        {/*        console.log("date:" + date)*/}
+                        {/*    }}*/}
+                        {/*    inputMode="start"*/}
+                        {/*    style={appStyle.textInput}*/}
+                        {/*/>*/}
                         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                             <TextInput
                                 editable={false}
@@ -236,7 +292,7 @@ const EditLogScreen = (store) => {
                             <Text style={{width: "60%", padding: 10}}>{video.title}</Text>
                         </View>
                         <View style={[appStyle.textInput]}>
-                            <BeLanCute parentCallback={callbackFunction}></BeLanCute>
+                            <BeLanCute parentCallback={callbackFunction} old={oldCute}></BeLanCute>
                         </View>
                         <TextInput
                             multiline
@@ -319,13 +375,40 @@ const EditLogScreen = (store) => {
                             buttonColor={"#01a1bd"}
                             style={{borderRadius: 0}}
                             onPress={() => {
-                                // store.navigation.dispatch(CommonActions.reset({
-                                //     index: 1, routes: [{name: "HomeScreen"},]
-                                // }))
-                                console.log(lesson)
+                                const log = {
+                                    id: id,
+                                    date: date,
+                                    start: start,
+                                    end: end,
+                                    duration: duration,
+                                    hourSalary: hourSalary,
+                                    logSalary: logSalary,
+                                    lesson: lesson,
+                                    information: information,
+                                    video: video,
+                                    status: status,
+                                    assessment: assessment,
+                                    homework: question,
+                                    attachments: attachments,
+
+                                }
+                                axios.post(store.store.config.api + "log/update", log, {
+                                    headers: {
+                                        Authorization: store.store.token
+                                    }
+                                }).then((response) => {
+                                    console.log(response.data)
+                                    store.navigation.dispatch(CommonActions.reset({
+                                        index: 1, routes: [{name: "SuccessScreen"},]
+                                    }))
+                                }).catch((error) => {
+                                    console.log(error.toJSON())
+                                })
+
+                                console.log("Home:"+question)
                             }}
                         >
-                            Tạo nhật ký
+                            Cập nhật
                         </Button>
                     </KeyboardAvoidingView>
                 </ScrollView>

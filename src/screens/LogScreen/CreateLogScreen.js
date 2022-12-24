@@ -48,13 +48,21 @@ const CreateLogScreen = (store) => {
         SetAttachment(attachments)
     }, [attachments])
     useEffect(() => {
+        console.log(teachers)
+        setTeacher(teachers[0])
+    }, [teachers])
+    useEffect(() => {
         axios.post(store.store.config.api + "log/create", {}, {
             headers: {
                 Authorization: store.store.token
             }
         }).then((response) => {
             setGrades(response.data.grades)
-            setTeachers(response.data.teachers)
+            setGrade(response.data.grades[0])
+            setTeachers(response.data.grades[0].teachers)
+
+            // setTeachers(response.data.grades.teachers)
+
             setLoading(false)
         }).catch((error) => {
             console.error()
@@ -74,28 +82,32 @@ const CreateLogScreen = (store) => {
                             mode={"dropdown"}
                             style={appStyle.textInput}
                             selectedValue={grade}
-                            onValueChange={(itemValue, itemIndex) =>
+                            onValueChange={(itemValue, itemIndex) => {
                                 setGrade(itemValue)
-                            }>
+                                setTeachers(itemValue.teachers)
+                            }}>
                             {grades.map((item, key) =>
-                                <SelectPicker.Item key={item.id} label={item.name} value={item.id}/>
+                                <SelectPicker.Item key={item.id} label={item.name} value={item}/>
                             )}
                         </SelectPicker>
                         {store.store.auth.type <= 0 ?
                             (
                                 <View>
                                     <Text style={{marginVertical: 5}}>Điểm danh hộ giáo viên :</Text>
-                                    <SelectPicker
-                                        mode={"dropdown"}
-                                        style={appStyle.textInput}
-                                        selectedValue={teacher}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            setTeacher(itemValue)
-                                        }>
-                                        {teachers.map((item, key) =>
-                                            <SelectPicker.Item key={item.id} label={item.name} value={item.id}/>
-                                        )}
-                                    </SelectPicker>
+                                    {grade !== null ?
+                                        <SelectPicker
+                                            mode={"dropdown"}
+                                            style={appStyle.textInput}
+                                            selectedValue={teacher}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                setTeacher(itemValue)
+                                            }
+                                            }>
+                                            {teachers.map((item, key) =>
+                                                <SelectPicker.Item key={item.id} label={item.name} value={item}/>
+                                            )}
+                                        </SelectPicker> : null
+                                    }
                                 </View>
                             )
                             : null
@@ -392,8 +404,8 @@ const CreateLogScreen = (store) => {
                             style={{borderRadius: 0}}
                             onPress={() => {
                                 const log = {
-                                    grade: grade,
-                                    teacher: teacher,
+                                    grade: grade.id,
+                                    teacher: teacher.id,
                                     date: date,
                                     start: start,
                                     end: end,
@@ -407,6 +419,7 @@ const CreateLogScreen = (store) => {
                                     assessment: assessment,
                                     question: question,
                                     attachments: attachments,
+
                                 }
                                 axios.post(store.store.config.api + "log/store", log, {
                                     headers: {
@@ -417,10 +430,10 @@ const CreateLogScreen = (store) => {
                                 }).catch((error) => {
                                     console.log(error.toJSON())
                                 })
-                                // store.navigation.dispatch(CommonActions.reset({
-                                //     index: 1, routes: [{name: "HomeScreen"},]
-                                // }))
-                                console.log(log)
+                                store.navigation.dispatch(CommonActions.reset({
+                                    index: 1, routes: [{name: "SuccessScreen"},]
+                                }))
+                                // console.log(log)
                             }}
                         >
                             Tạo nhật ký

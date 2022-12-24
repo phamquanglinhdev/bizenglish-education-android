@@ -48,7 +48,7 @@ const LoginScreen = (store) => {
                     }
                 }).then((back) => {
                 }).catch((er) => {
-
+                    setLoading(false)
                 })
             });
             store.dispatch(setAuth(response.data))
@@ -61,7 +61,7 @@ const LoginScreen = (store) => {
                 })
             )
         }).catch((error) => {
-
+            setLoading(false)
         })
     }
     const [loading, setLoading] = useState(true)
