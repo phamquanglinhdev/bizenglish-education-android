@@ -118,7 +118,8 @@ export default function App() {
                     <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="DeleteScreen" component={DeleteScreen} options={{headerShown: false}}/>
                     <Stack.Screen name="SuccessScreen" component={SuccessScreen} options={{headerShown: false}}/>
-                    <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{title:"Chi tiết thông báo"}}/>
+                    <Stack.Screen name="NotificationScreen" component={NotificationScreen}
+                                  options={{title: "Chi tiết thông báo"}}/>
                     <Stack.Screen name="GradesScreen" component={GradesScreen} options={{title: "Danh sách lớp học"}}/>
                     <Stack.Screen name="CreateGradeScreen" component={CreateGradeScreen}
                                   options={{title: "Tạo lớp học"}}/>

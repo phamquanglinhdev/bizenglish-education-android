@@ -9,9 +9,9 @@ import axios from "axios";
 const GradesScreen = (store) => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
     useEffect(() => {
-        console.log("Hi")
-        axios.post(store.store.config.api + "grades", {}, {
+        axios.post(store.store.config.api + "grades", {page: page}, {
             headers: {
                 Authorization: store.store.token
             }
@@ -22,14 +22,14 @@ const GradesScreen = (store) => {
             console.log(error.toJSON())
             setLoading(false)
         })
-    }, [1])
+    }, [page])
     if (loading)
         return (
             <BeLanLoading/>
         )
     else
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                     <Button
                         mode={""}
@@ -46,7 +46,7 @@ const GradesScreen = (store) => {
                     >Bộ lọc</Button>
                 </View>
                 <ScrollView horizontal={true}>
-                    <View style={{paddingBottom: 50}}>
+                    <View>
                         <View style={{flexDirection: "row", backgroundColor: "white"}}>
                             <View style={[appStyle.cell, {width: 100}]}><Text
                                 style={appStyle.tHead}>Tên
@@ -176,6 +176,39 @@ const GradesScreen = (store) => {
                         </ScrollView>
                     </View>
                 </ScrollView>
+                {/*pagination*/}
+                <View style={{margin: 20, flexDirection: "row", justifyContent: "center"}}>
+                    {page !== 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(1)
+                            }}
+                        > {"|<<"} </Button>
+                        : null}
+                    {page > 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(page - 1)
+                            }}
+                        >{page - 1}</Button> : null
+                    }
+                    <Button mode={"contained"}>{page}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 1)
+                        }}
+                    >{page + 1}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 20)
+                        }}
+                    > {">>|"}</Button>
+                </View>
+                {/*pagination*/}
             </View>
         )
 }

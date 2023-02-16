@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
 import BeLanLoading from "../../components/BeLanLoading";
-import {Image, Text, View} from "react-native";
+import {Image, Linking, Text, View} from "react-native";
 import {connect} from "react-redux";
 import {Button, Chip} from "react-native-paper";
 import {appStyle} from "../../Style/appStyle";
+import axios from "axios";
 
 const StaffShowScreen = (store) => {
     const [name, setName] = useState("")
@@ -15,24 +16,14 @@ const StaffShowScreen = (store) => {
     const [phone, setPhone] = useState("")
     const [students, setStudents] = useState([])
     const [loading, setLoading] = useState(true)
-    const [id, setId] = useState("")
+    const id = store.route.params.id
     useEffect(() => {
-        setTimeout(() => {
-            console.log("make-data")
-            const data =
-                {
-                    id: "1",
-                    address: "Ninh Bình",
-                    avatar: "https://mega.com.vn/media/news/0406_anh-gai-xinh-104.jpg",
-                    code: "NV01",
-                    email: "phamquanglinhdev@gmail.com",
-                    extras: [{info: "Cao học", name: "Học vấn"}],
-                    facebook: "https://fb.me/linhcuenini",
-                    job: "Developer",
-                    name: "Phạm Quang Linh",
-                    phone: "0904800240",
-                    students: [{id: 1, name: "Phạm Hồng Hạnh"}, {id: 2, name: "Trần Thuỳ Trang"}]
-                }
+        axios.post(store.store.config.api + "staff/show", {id: id}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            const data = response.data
             setAvatar(data.avatar)
             setName(data.name)
             setCode(data.code)
@@ -42,7 +33,11 @@ const StaffShowScreen = (store) => {
             setPhone(data.phone)
             setStudents(data.students)
             setLoading(false)
-        }, 5)
+        }).catch((error) => {
+            console.log(error.toJSON())
+            // console.log(id)
+            store.navigation.goBack()
+        })
     }, [1])
 
     if (loading) return (
@@ -65,7 +60,14 @@ const StaffShowScreen = (store) => {
                 }}>{name}({code})</Text>
                 <Chip icon={"gmail"} style={appStyle.listItem}>{email}</Chip>
                 <Chip icon={"phone"} style={appStyle.listItem}>{phone}</Chip>
-                <Chip icon={"facebook"} style={appStyle.listItem}>{facebook}</Chip>
+                {facebook != null ?
+                    <Chip icon={"facebook"} style={appStyle.listItem}
+                          onPress={() => {
+                              Linking.openURL(facebook).then()
+                          }}
+                    >{facebook}</Chip> :
+                    null
+                }
                 <Chip icon={"badge-account-horizontal"} style={appStyle.listItem}>{job}</Chip>
                 <Chip icon={"account-multiple"} style={appStyle.listItem}>Số học sinh quản lý: {students.length}</Chip>
                 <Button
@@ -77,7 +79,7 @@ const StaffShowScreen = (store) => {
                 </Button>
                 <Button
                     onPress={() => {
-                        store.navigation.navigate("EditStaffScreen", {id: id, name: "Nguyễn Văn A"})
+                        store.navigation.navigate("EditStaffScreen", {id: id, name: name})
                     }}
                 >
                     Chỉnh sửa thông tin

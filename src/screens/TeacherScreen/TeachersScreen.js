@@ -6,21 +6,22 @@ import {Button} from "react-native-paper";
 import {appStyle} from "../../Style/appStyle";
 
 const TeachersScreen = (store) => {
-    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13]
+    const [data, setData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13])
+    const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         setTimeout(() => {
             console.log("data")
             setLoading(false)
         }, 5)
-    }, [1])
+    }, [page])
     if (loading)
         return (
             <BeLanLoading/>
         )
     else
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                     <Button
                         mode={""}
@@ -37,7 +38,7 @@ const TeachersScreen = (store) => {
                     >Bộ lọc</Button>
                 </View>
                 <ScrollView horizontal={true}>
-                    <View style={{paddingBottom: 50}}>
+                    <View>
                         <View style={{flexDirection: "row", backgroundColor: "white"}}>
                             <View style={[appStyle.cell, {width: 120}]}><Text
                                 style={appStyle.tHead}>Mã giáo viên</Text></View>
@@ -148,6 +149,39 @@ const TeachersScreen = (store) => {
                         </ScrollView>
                     </View>
                 </ScrollView>
+                {/*pagination*/}
+                <View style={{margin: 20, flexDirection: "row", justifyContent: "center"}}>
+                    {page !== 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(1)
+                            }}
+                        > {"|<<"} </Button>
+                        : null}
+                    {page > 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(page - 1)
+                            }}
+                        >{page - 1}</Button> : null
+                    }
+                    <Button mode={"contained"}>{page}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 1)
+                        }}
+                    >{page + 1}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 20)
+                        }}
+                    > {">>|"}</Button>
+                </View>
+                {/*pagination*/}
             </View>
         )
 }

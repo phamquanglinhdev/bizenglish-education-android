@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import BeLanLoading from "../../components/BeLanLoading";
-import {Image, ScrollView, View} from "react-native";
+import {Alert, Image, ScrollView, View} from "react-native";
 import {Button, TextInput} from "react-native-paper";
 import {connect} from "react-redux";
 import {appStyle} from "../../Style/appStyle";
@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import BeLanSelect2 from "../../components/BeLanSelect2";
 import BeLanRepeatable from "../../components/BeLanRepeatable";
 import {CommonActions} from "@react-navigation/native";
+import axios from "axios";
 
 const EditStaffScreen = (store) => {
     const id = store.route.params.id
@@ -22,34 +23,15 @@ const EditStaffScreen = (store) => {
     const [address, setAddress] = useState("")
     const [students, setStudents] = useState([])
     const [password, setPassword] = useState()
-    const [studentData, setStudentData] = useState([
-        {
-            id: 1,
-            name: "Phạm Hồng Hạnh"
-        },
-        {
-            id: 2,
-            name: "Trần Thuỳ Trang"
-        },
-        {
-            id: 3,
-            name: "Lê Xuân Văn"
-        },
-        {
-            id: 4,
-            name: "Triệu Thị Ngọc"
-        },
-    ])
+    const [studentData, setStudentData] = useState([])
     const [extras, setExtras] = useState([])
-    const [extrasData, setExtraData] = useState([
-        {name: "Học vấn", info: "Cao học"}
-    ])
+    const [extrasData, setExtraData] = useState([])
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             base64: true,
-            allowsEditing: false,
+            allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         })
@@ -66,10 +48,37 @@ const EditStaffScreen = (store) => {
     }
     const [showPassword, setShowPassword] = useState(false)
     useEffect(() => {
-        setTimeout(() => {
+        axios.post(store.store.config.api + "staff/student", {}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            setStudentData(response.data)
+            // console.log(response.data)
+            // setLoading(false)
+        })
+        axios.post(store.store.config.api + "staff/edit", {id: id}, {
+            headers: {
+                Authorization: store.store.token
+            }
+        }).then((response) => {
+            const data = response.data
+            setAvatar(data.avatar)
+            setCode(data.code)
+            setName(data.name)
+            setJob(data.job)
+            setEmail(data.email)
+            setPhone(data.phone)
+            setExtras(data.extras)
+            setFacebook(data.facebook)
+            setStudents(data.students)
+            setAddress(data.address)
             setLoading(false)
-        }, 5)
-    })
+        }).catch((error) => {
+            console.log(error)
+        })
+
+    }, [1])
     if (loading) return (<BeLanLoading/>)
     else
         return (<View style={[appStyle.container, {backgroundColor: "white"}]}>
@@ -189,8 +198,8 @@ const EditStaffScreen = (store) => {
                     onPress={() => {
                         const staff = {
                             id: id,
-                            avatar:avatar,
                             code: code,
+                            avatar: avatar,
                             name: name,
                             job: job,
                             email: email,
@@ -201,13 +210,27 @@ const EditStaffScreen = (store) => {
                             address: address,
                             password: password,
                         }
-                        console.log(staff)
-                        // store.navigation.dispatch(CommonActions.reset({
-                        //     index: 1, routes: [{name: "HomeScreen"},]
-                        // }))
+                        console.log(students)
+                        setLoading(true)
+                        axios.post(store.store.config.api + "staff/update", staff, {
+                            headers: {
+                                Authorization: store.store.token
+                            }
+                        }).then((response) => {
+                            console.log(response.data)
+                            store.navigation.dispatch(CommonActions.reset({
+                                index: 1, routes: [{name: "SuccessScreen"},]
+                            }))
+                            // setLoading(false)
+                        }).catch((error) => {
+                            setLoading(false)
+                            // console.log(error)
+                            Alert.alert("Không thể cập nhật", "Đã xảy ra lỗi, vui lòng kiểm tra lại dữ liệu.")
+                        })
+
                     }}
                 >
-                    Tạo nhân viên
+                    Cập nhật nhân viên
                 </Button>
             </ScrollView>
         </View>)

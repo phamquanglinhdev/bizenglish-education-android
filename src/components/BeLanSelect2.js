@@ -4,7 +4,6 @@ import {Button, Chip, TextInput} from "react-native-paper";
 import {useEffect, useState} from "react";
 
 const BeLanSelect2 = (props) => {
-
     const [show, isShow] = useState(false)
     const data = props.data
     const [dataFilter, setDataFilter] = useState(data)
@@ -12,6 +11,9 @@ const BeLanSelect2 = (props) => {
     useEffect(() => {
         props.parentCallback(choose)
     }, [choose])
+    useEffect(() => {
+        setChoose(props.choose)
+    }, [props.choose])
     return (
         <View style={{flex: 1, paddingVertical: 10}}>
             <Text style={{paddingBottom: 10}}>{props.label ? props.label : "Lựa chọn:"}</Text>

@@ -136,15 +136,17 @@ const LogsScreen = (store) => {
                                                 )}
                                             </Text></View>
                                             <View style={[appStyle.cell, {width: 300}]}>
-                                                <Button style={appStyle.tBody}
-                                                        onPress={() => {
-                                                            store.navigation.navigate("TeacherShowScreen", {
-                                                                id: item.teachers.id,
-                                                                name: item.teachers.name,
-                                                            })
-                                                        }}
-                                                >{item.teachers.name}
-                                                </Button>
+                                                {item.teachers.map((teacher, key) =>
+                                                    <Button key={key} style={appStyle.tBody}
+                                                            onPress={() => {
+                                                                store.navigation.navigate("TeacherShowScreen", {
+                                                                    id: teacher.id,
+                                                                    name: teacher.name,
+                                                                })
+                                                            }}
+                                                    >{teacher.name}
+                                                    </Button>
+                                                )}
                                             </View>
                                             <View style={[appStyle.cell, {width: 300}]}>
                                                 {item.clients.map((client, key) =>
@@ -222,19 +224,35 @@ const LogsScreen = (store) => {
                     </View>
                 </ScrollView>
                 <View style={{margin: 20, flexDirection: "row", justifyContent: "center"}}>
-                    <Button
-                        onPress={() => {
-                            setLoading(true)
-                            setPage(page - 1)
-                        }}
-                    > {"<<"} </Button>
-                    <Button>{page}</Button>
+                    {page !== 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(1)
+                            }}
+                        > {"|<<"} </Button> : null
+                    }
+                    {page > 1 ?
+                        <Button
+                            onPress={() => {
+                                setLoading(true)
+                                setPage(page - 1)
+                            }}
+                        >{page - 1}</Button> : null
+                    }
+                    <Button mode={"contained"}>{page}</Button>
                     <Button
                         onPress={() => {
                             setLoading(true)
                             setPage(page + 1)
                         }}
-                    > {">>"}</Button>
+                    >{page + 1}</Button>
+                    <Button
+                        onPress={() => {
+                            setLoading(true)
+                            setPage(page + 20)
+                        }}
+                    > {">>|"}</Button>
                 </View>
             </View>
         )
